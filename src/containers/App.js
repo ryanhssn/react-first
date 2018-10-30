@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classes from './App.css';
-import Person from './Person/Person';
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import Cockpit from '../components/Cockpit/Cockpit';
+import Persons from '../components/Persons/Persons';
+import withClass from '../HOC/withClass';
+import Aux from '../HOC/Aux';
 
-class App extends Component {
+
+class App extends PureComponent {
 
   state = {
     persons: [
@@ -51,42 +54,29 @@ class App extends Component {
 
   render() {
 
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-    
+   
+
+    let allPersons = null;
+
+    if (this.state.showPersons) {
+      allPersons = 
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deleteHandler}
+            changed={this.nameChangedHandler}
+           />
+       
     }
 
     return (
   
-      <div className={classes.App}>
-        <h1>I am React App!</h1>
-        <button
-          style={style} 
-          onClick={this.togglePersons}>Switch Name</button>
-        {
-          this.state.showPersons ?
-            this.state.persons.map((person, index) => 
-            <ErrorBoundary key={person.id}>
-            <Person 
-              name={person.name} 
-              designation={person.designation} 
-              
-              changed={(event) => this.nameChangedHandler(event, person.id)}
-              click={() => this.deleteHandler(index)} />
-              </ErrorBoundary>
-             )
-          : null
-            
-        }
-        
-      </div>
+      <Aux>
+        <Cockpit togglePersons={this.togglePersons} />
+         {allPersons}
+      </Aux>
     
     );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
